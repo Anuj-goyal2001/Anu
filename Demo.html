@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeonFlow — Animated HTML & CSS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1:#0b0f1a; /* Deep space */
+      --bg-2:#0f1424; /* Subtle gradient */
+      --acc-1:#7c5cff; /* Purple */
+      --acc-2:#00d4ff; /* Aqua */
+      --acc-3:#00ffa3; /* Mint */
+      --text:#e9f0ff;
+      --muted:#a6b3d1;
+      --card:#12182a;
+      --glass:rgba(255,255,255,.06);
+      --border:rgba(255,255,255,.12);
+      --radius:22px;
+      --shadow:0 20px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Outfit", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,.15), transparent 60%),
+                  radial-gradient(1000px 600px at 90% 10%, rgba(0,212,255,.12), transparent 60%),
+                  radial-gradient(1000px 700px at 50% 120%, rgba(0,255,163,.10), transparent 60%),
+                  linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      overflow-x:hidden;
+    }
+
+    /* --- Animated background orbs --- */
+    .orb{
+      position:fixed; inset:auto; z-index:-1; filter: blur(60px); opacity:.55; pointer-events:none;
+      width:42vmin; height:42vmin; border-radius:50%; mix-blend-mode:screen;
+      background: radial-gradient(circle at 30% 30%, var(--acc-2), transparent 60%);
+      animation: float 16s ease-in-out infinite;
+    }
+    .orb:nth-child(2){ left:-6vmin; top:20vh; background: radial-gradient(circle at 70% 40%, var(--acc-1), transparent 60%); animation-duration:18s; animation-delay:-3s }
+    .orb:nth-child(3){ right:-10vmin; top:55vh; background: radial-gradient(circle at 50% 60%, var(--acc-3), transparent 60%); animation-duration:22s; animation-delay:-6s }
+    @keyframes float{ 0%,100%{ transform: translateY(-10px) translateX(0)} 50%{ transform: translateY(15px) translateX(10px)} }
+
+    /* --- Layout helpers --- */
+    .container{ width:min(1100px, 90%); margin-inline:auto; }
+    .grid{ display:grid; gap:22px }
+
+    /* --- Top Nav --- */
+    header{
+      position:sticky; top:0; z-index:10; backdrop-filter: blur(10px);
+      background:linear-gradient(180deg, rgba(7,10,20,.7), rgba(7,10,20,.15));
+      border-bottom:1px solid var(--border);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between; padding:14px 0;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px }
+    .logo{ width:36px; height:36px; border-radius:12px; background:linear-gradient(135deg, var(--acc-1), var(--acc-2)); box-shadow: var(--shadow); transform: rotate(10deg) }
+    .links{ display:flex; gap:18px; align-items:center }
+    .links a{
+      color:var(--muted); text-decoration:none; font-weight:600; position:relative; padding:8px 10px; border-radius:12px;
+      transition:color .3s ease;
+    }
+    .links a:hover{ color:var(--text) }
+    .links a::after{ content:""; position:absolute; left:10px; right:10px; bottom:6px; height:2px; background:linear-gradient(90deg, var(--acc-2), var(--acc-1)); transform:scaleX(0); transform-origin:left; transition:transform .35s ease }
+    .links a:hover::after{ transform:scaleX(1) }
+
+    /* --- Hero --- */
+    .hero{ padding:72px 0 36px; text-align:center }
+    .badge{ display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; border:1px solid var(--border); background:var(--glass); font-weight:600; color:var(--muted) }
+    .pulse{ width:8px; height:8px; border-radius:999px; background:var(--acc-3); box-shadow:0 0 0 0 rgba(0,255,163,.7); animation:pulse 2s infinite }
+    @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(0,255,163,.7)} 70%{ box-shadow:0 0 0 16px rgba(0,255,163,0)} 100%{ box-shadow:0 0 0 0 rgba(0,255,163,0)} }
+
+    .hero h1{ font-size: clamp(32px, 5vw, 60px); line-height:1.05; margin:18px 0; font-weight:800; letter-spacing:.3px }
+    .gradient-text{ background:linear-gradient(90deg, var(--acc-2), var(--acc-1)); -webkit-background-clip:text; background-clip:text; color:transparent }
+
+    /* Typewriter line */
+    .typewriter{ display:inline-grid; place-items:center; margin-top:4px }
+    .type{ --w: 19ch; position:relative; font-weight:700; font-size: clamp(16px, 2.8vw, 22px); color:var(--muted);
+      width: var(--w); white-space:nowrap; overflow:hidden; border-right: 2px solid var(--acc-2);
+      animation: typing 4.5s steps(19) infinite, blink .7s step-end infinite alternate; }
+    @keyframes typing{ 0%{ width:0 } 40%,60%{ width:var(--w) } 100%{ width:0 } }
+    @keyframes blink{ 50%{ border-color:transparent } }
+
+    .cta{
+      display:flex; gap:14px; align-items:center; justify-content:center; margin-top:26px;
+    }
+    .btn{
+      --glow: radial-gradient(18px 18px at 0 0, rgba(255,255,255,.8), transparent 60%);
+      position:relative; isolation:isolate; padding:14px 20px; border-radius:999px; border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color:var(--text); font-weight:800; letter-spacing:.4px; text-decoration:none; box-shadow: var(--shadow);
+      overflow:hidden; transition: transform .2s ease;
+    }
+    .btn:hover{ transform: translateY(-1px) }
+    .btn::before{ content:""; position:absolute; inset:-1px; border-radius:999px; background:
+      conic-gradient(from var(--a), var(--acc-2), var(--acc-1), var(--acc-3), var(--acc-2));
+      z-index:-1; filter: blur(14px); opacity:.35; animation: spin 6s linear infinite }
+    @keyframes spin{ to{ --a:360deg } }
+
+    .ghost{ background: transparent; border:1px dashed var(--border); color:var(--muted); font-weight:700 }
+
+    /* --- Cards --- */
+    .section{ padding:60px 0 }
+    .h2{ font-size: clamp(24px, 3.6vw, 34px); margin:0 0 16px; font-weight:800 }
+    .sub{ color:var(--muted); margin:0 0 26px }
+
+    .cards{ grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--border); border-radius: var(--radius); padding:20px; box-shadow: var(--shadow);
+      position:relative; overflow:hidden; transform-origin: center; transition: transform .35s ease, border-color .35s ease, background .35s ease;
+    }
+    .card:hover{ transform: translateY(-6px) scale(1.02); border-color: rgba(124,92,255,.5); background: linear-gradient(180deg, rgba(124,92,255,.10), rgba(255,255,255,.02)) }
+    .icon{
+      width:46px; height:46px; border-radius:14px; display:grid; place-items:center;
+      background:linear-gradient(135deg, var(--acc-2), var(--acc-1));
+      filter: drop-shadow(0 6px 16px rgba(124,92,255,.45));
+      animation: bob 3s ease-in-out infinite;
+    }
+    @keyframes bob{ 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-6px) } }
+    .card h3{ margin:14px 0 8px; font-size:20px }
+    .card p{ margin:0; color:var(--muted) }
+
+    /* --- Showcase stripe --- */
+    .marquee{
+      display:flex; gap:20px; overflow:hidden; mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+      border:1px solid var(--border); background:var(--glass); border-radius: var(--radius); padding:16px; position:relative;
+    }
+    .roll{ display:flex; gap:20px; animation: roll 24s linear infinite }
+    .pill{ padding:10px 14px; border-radius:999px; border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01)); color:var(--muted); font-weight:700 }
+    @keyframes roll{ to{ transform: translateX(-50%) } }
+
+    /* --- Gallery --- */
+    .gallery{ grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .shot{
+      position:relative; overflow:hidden; border-radius:20px; aspect-ratio: 16 / 10; border:1px solid var(--border);
+      background: linear-gradient(135deg, rgba(124,92,255,.12), rgba(0,212,255,.12));
+      box-shadow: var(--shadow); transition: transform .4s ease, filter .4s ease;
+    }
+    .shot::after{ content:"CSS Magic"; position:absolute; bottom:10px; right:12px; font-weight:700; font-size:12px; color:#0b0f1a; background: rgba(255,255,255,.75); padding:6px 10px; border-radius:999px }
+    .shot:hover{ transform: translateY(-8px) rotate(-1deg) scale(1.02); filter: saturate(1.2) }
+
+    /* --- Loader --- */
+    .loader{
+      width:64px; height:64px; border-radius:50%; margin-inline:auto; border: 6px solid rgba(255,255,255,.12);
+      border-top-color: var(--acc-2); animation: spinFull 1s linear infinite; margin-top:10px
+    }
+    @keyframes spinFull{ to{ transform: rotate(360deg) } }
+
+    /* --- Footer --- */
+    footer{ padding:40px 0 80px; color:var(--muted); text-align:center }
+    .sep{ height:1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin:36px 0 }
+
+    /* --- Responsive niceties --- */
+    @media (max-width: 640px){
+      .links{ display:none }
+      .hero{ padding-top:36px }
+      .cta{ flex-direction:column }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating light orbs -->
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+
+  <!-- NAVBAR -->
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo"></div>
+        NeonFlow
+      </div>
+      <nav class="links">
+        <a href="#features">Features</a>
+        <a href="#showcase">Showcase</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero container">
+    <span class="badge"><span class="pulse"></span> 100% HTML + CSS Animations</span>
+    <h1>Create <span class="gradient-text">smooth, modern</span> motion with zero JavaScript.</h1>
+    <div class="typewriter">
+      <div class="type">Hover • Pulse • Marquee • Orbit • Glow</div>
+    </div>
+    <div class="cta">
+      <a class="btn" href="#features">Explore Components</a>
+      <a class="btn ghost" href="#gallery">View Gallery</a>
+    </div>
+  </section>
+
+  <!-- FEATURES / CARDS -->
+  <section id="features" class="section">
+    <div class="container">
+      <h2 class="h2">Animated Components</h2>
+      <p class="sub">Drag these cards with your eyes 👀 — each one showcases a distinct CSS animation style.</p>
+      <div class="grid cards">
+        <article class="card">
+          <div class="icon">✨</div>
+          <h3>Shimmer Button</h3>
+          <p>Conic-gradient glow with subtle lift on hover. Change colors via <code>--acc-*</code> variables.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🌊</div>
+          <h3>Floating Background</h3>
+          <p>Soft orbs gently bob using a simple <code>@keyframes float</code>.</p>
+        </article>
+        <article class="card">
+          <div class="icon">⌨️</div>
+          <h3>Typewriter</h3>
+          <p>Pure CSS typing effect using <code>steps()</code> and caret blinking.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🏎️</div>
+          <h3>Marquee</h3>
+          <p>Infinite, buttery-smooth text ticker powered by translate animations.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE STRIPE -->
+  <section id="showcase" class="section">
+    <div class="container">
+      <h2 class="h2">Showcase Stripe</h2>
+      <p class="sub">Place your features, client logos, or categories in a looping ribbon.</p>
+      <div class="marquee">
+        <div class="roll">
+          <span class="pill">Landing Pages</span>
+          <span class="pill">Hero Sections</span>
+          <span class="pill">CTA Buttons</span>
+          <span class="pill">Pricing Cards</span>
+          <span class="pill">Galleries</span>
+          <span class="pill">Shadows</span>
+          <span class="pill">Gradients</span>
+          <span class="pill">Neomorphism</span>
+          <!-- duplicate items for seamless loop -->
+          <span class="pill">Landing Pages</span>
+          <span class="pill">Hero Sections</span>
+          <span class="pill">CTA Buttons</span>
+          <span class="pill">Pricing Cards</span>
+          <span class="pill">Galleries</span>
+          <span class="pill">Shadows</span>
+          <span class="pill">Gradients</span>
+          <span class="pill">Neomorphism</span>
+        </div>
+      </div>
+      <div style="height:16px"></div>
+      <div class="loader" aria-label="Loading animation demo"></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="section">
+    <div class="container">
+      <h2 class="h2">Interactive Gallery</h2>
+      <p class="sub">Hover to see tilt + zoom + saturate motion, all with CSS transforms.</p>
+      <div class="grid gallery">
+        <figure class="shot" title="Aurora gradient"></figure>
+        <figure class="shot" title="Soft neon"></figure>
+        <figure class="shot" title="Cyber dusk"></figure>
+        <figure class="shot" title="Mint haze"></figure>
+        <figure class="shot" title="Sapphire glow"></figure>
+        <figure class="shot" title="Violet breeze"></figure>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- CONTACT / FOOTER -->
+  <section id="contact" class="section">
+    <div class="container">
+      <h2 class="h2">Use It In Your Project</h2>
+      <p class="sub">Copy this single file and customize the colors in <code>:root</code>. No build tools, no JS required.</p>
+      <div class="grid cards" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))">
+        <article class="card">
+          <div class="icon">🎨</div>
+          <h3>Change Theme</h3>
+          <p>Edit <code>--acc-1</code>, <code>--acc-2</code>, <code>--acc-3</code> to instantly recolor animations.</p>
+        </article>
+        <article class="card">
+          <div class="icon">⚡</div>
+          <h3>Performance</h3>
+          <p>All animations use transform/opacity for smooth 60fps on modern browsers.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🧩</div>
+          <h3>Modular</h3>
+          <p>Each component is self-contained. Copy only what you need.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">Made with ❤️ and pure CSS animations • NeonFlow © 2025</div>
+  </footer>
+</body>
+</html>
